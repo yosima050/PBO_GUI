@@ -1,10 +1,17 @@
+package perpus;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-// import model.*;
+
+import dao.BukuDAO;
+import dao.BukuDAOImpl;
+import dao.PeminjamanDAO;
+import model.Anggota;
+import model.Buku;
 
 public class MainFrame extends JFrame {
     private BukuDAO bukuDAO;
@@ -61,18 +68,27 @@ public class MainFrame extends JFrame {
         tableModelBuku = new DefaultTableModel(colNames, 0);
         tableBuku = new JTable(tableModelBuku);
         tableBuku.setDefaultEditor(Object.class, null);
-        panel.add(new JScrollPane(tableBuku), BorderLayout.CENTER);
 
-        // Event Klik Tabel
+        // tambahkan JScrollPane lalu sembunyikan kolom ID di view (tetap ada di model)
+        JScrollPane sp = new JScrollPane(tableBuku);
+        panel.add(sp, BorderLayout.CENTER);
+
+        if (tableBuku.getColumnModel().getColumnCount() > 0) {
+            // removeColumn bekerja pada view; model tetap menyimpan kolom ID di index 0
+            tableBuku.removeColumn(tableBuku.getColumnModel().getColumn(0));
+        }
+
+        // Event Klik Tabel (gunakan convertRowIndexToModel karena kolom di-hide)
         tableBuku.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                int row = tableBuku.getSelectedRow();
-                if (row != -1) {
-                    idBukuTerpilih = Integer.parseInt(tableModelBuku.getValueAt(row, 0).toString());
-                    comboJenis.setSelectedItem(tableModelBuku.getValueAt(row, 1).toString());
-                    txtJudul.setText(tableModelBuku.getValueAt(row, 2).toString());
-                    txtPenulis.setText(tableModelBuku.getValueAt(row, 3).toString());
-                    txtStok.setText(tableModelBuku.getValueAt(row, 4).toString());
+                int viewRow = tableBuku.getSelectedRow();
+                if (viewRow != -1) {
+                    int modelRow = tableBuku.convertRowIndexToModel(viewRow);
+                    idBukuTerpilih = Integer.parseInt(tableModelBuku.getValueAt(modelRow, 0).toString());
+                    comboJenis.setSelectedItem(tableModelBuku.getValueAt(modelRow, 1).toString());
+                    txtJudul.setText(tableModelBuku.getValueAt(modelRow, 2).toString());
+                    txtPenulis.setText(tableModelBuku.getValueAt(modelRow, 3).toString());
+                    txtStok.setText(tableModelBuku.getValueAt(modelRow, 4).toString());
                     
                     btnSimpanBuku.setText("Update Data");
                     btnHapusBuku.setEnabled(true);

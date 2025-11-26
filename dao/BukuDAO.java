@@ -1,5 +1,8 @@
+package dao;
+
 import java.util.List;
-//import model.Buku;
+// tambahkan import model
+import model.Buku;
 
 public interface BukuDAO {
     void simpan(Buku buku);

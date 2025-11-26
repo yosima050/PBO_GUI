@@ -1,9 +1,14 @@
+package dao;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import config.KoneksiDB;
-// import model.*; 
+
+// tambahkan import model
+import model.Anggota;
+import model.Buku;
 
 public class PeminjamanDAO {
 

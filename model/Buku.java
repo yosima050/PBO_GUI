@@ -1,3 +1,5 @@
+package model;
+
 public class Buku extends ItemPerpustakaan {
     
     private int idBuku;
